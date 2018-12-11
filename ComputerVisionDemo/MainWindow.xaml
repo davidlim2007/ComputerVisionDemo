@@ -23,7 +23,7 @@
             <Image x:Name="ImgUpload" Stretch="Uniform" Margin="0,0,394,0" />
             <DockPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,0,-0.248,0">
                 <StatusBar VerticalAlignment="Bottom" Margin="0,0,0,-0.4" Width="389">
-                    <StatusBarItem Height="550">
+                    <StatusBarItem Height="680">
                         <TextBlock Name="imageDescriptionStatusBar" TextWrapping="Wrap" TextAlignment="Left" />
                     </StatusBarItem>
                 </StatusBar>

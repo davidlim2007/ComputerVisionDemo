@@ -88,7 +88,14 @@ namespace ComputerVisionDemo
         }
 
         // BrowseButton_Click() is the event handler shared by the "Browse" button.
-        // 
+        // When clicked, a file dialog is opened, allowing the user to choose the
+        // image file to upload. The user is currently limited to JPEG images
+        // (*.jpg or *.jpeg).
+        //
+        // When the image is selected, the local path to the image is assigned to
+        // global variable filePath. This allows the program to know which image
+        // to upload to the API when either Analyze Image or Extract Text is
+        // clicked.
         private void BrowseButton_Click(object sender, RoutedEventArgs e)
         {
             // Get the image file to scan from the user.
@@ -103,11 +110,21 @@ namespace ComputerVisionDemo
                 return;
             }
 
+            // Save the local path of the file.
             filePath = openDlg.FileName;
+
+            // If the file path is invalid, display an error message.
+            if (!File.Exists(filePath))
+            {
+                lblError.Content = "Unable to open or read Image Path: " + filePath;
+                lblError.Visibility = Visibility.Visible;
+                return;
+            }
 
             Uri fileUri = new Uri(filePath);
             BitmapImage bitmapSource = new BitmapImage();
 
+            // Display the image on the Window.
             bitmapSource.BeginInit();
             bitmapSource.CacheOption = BitmapCacheOption.None;
             bitmapSource.UriSource = fileUri;
@@ -116,13 +133,24 @@ namespace ComputerVisionDemo
             ImgUpload.Source = bitmapSource;
         }
 
+        // The Click event handler for the Analyze Image button.
+        //
+        // This method simply calls the async method AnalyzeImageAsync()
+        // and waits for it to finish.
         private async void btnAnalyzeImage_Click(object sender, RoutedEventArgs e)
         {
             await AnalyzeImageAsync();
         }
 
+        // This method is adapted from the AnalyzeLocalAsync() method from
+        // the following tutorial: 
+        // https://docs.microsoft.com/en-us/azure/cognitive-services/Computer-vision/quickstarts-sdk/csharp-analyze-sdk
+        //
+        // 
         private async Task AnalyzeImageAsync()
         {
+            // If the user has not entered a key, display an error message
+            // prompting the user to do so.
             if (String.IsNullOrEmpty(CVKey.Text))
             {
                 lblError.Content = "Please enter a Computer Vision API Key.";
@@ -130,16 +158,11 @@ namespace ComputerVisionDemo
                 return;
             }
 
+            // If the user has not uploaded an image, display an error message
+            // prompting the user to do so.
             if (String.IsNullOrEmpty(filePath))
             {
                 lblError.Content = "Please upload an image.";
-                lblError.Visibility = Visibility.Visible;
-                return;
-            }
-
-            if (!File.Exists(filePath))
-            {
-                lblError.Content = "Unable to open or read Image Path: " + filePath;
                 lblError.Visibility = Visibility.Visible;
                 return;
             }
