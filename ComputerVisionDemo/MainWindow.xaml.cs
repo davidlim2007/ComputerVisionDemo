@@ -145,8 +145,6 @@ namespace ComputerVisionDemo
         // This method is adapted from the AnalyzeLocalAsync() method from
         // the following tutorial: 
         // https://docs.microsoft.com/en-us/azure/cognitive-services/Computer-vision/quickstarts-sdk/csharp-analyze-sdk
-        //
-        // 
         private async Task AnalyzeImageAsync()
         {
             // If the user has not entered a key, display an error message
