@@ -174,13 +174,25 @@ namespace ComputerVisionDemo
 
                 imageDescriptionStatusBar.Text = "Description: ";
                 imageDescriptionStatusBar.Text += analysis.Description.Captions[0].Text + "\n";
-                imageDescriptionStatusBar.Text += "Tags: ";
+                imageDescriptionStatusBar.Text += "Description Tags: ";
 
                 for (int i = 0; i < analysis.Description.Tags.Count; i++)
                 {
                     imageDescriptionStatusBar.Text += analysis.Description.Tags[i];
 
                     if (i != analysis.Description.Tags.Count - 1)
+                    {
+                        imageDescriptionStatusBar.Text += ", ";
+                    }
+                }
+
+                imageDescriptionStatusBar.Text += "\nOther Tags: ";
+
+                for (int i = 0; i < analysis.Tags.Count; i++)
+                {
+                    imageDescriptionStatusBar.Text += analysis.Tags[i].Name;
+
+                    if (i != analysis.Tags.Count - 1)
                     {
                         imageDescriptionStatusBar.Text += ", ";
                     }
