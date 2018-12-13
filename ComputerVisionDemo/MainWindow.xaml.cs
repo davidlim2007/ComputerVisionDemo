@@ -199,7 +199,7 @@ namespace ComputerVisionDemo
                 }
             }
         }
-
+        
         private async void btnExtractText_Click(object sender, RoutedEventArgs e)
         {
             await GetTextAsync();
