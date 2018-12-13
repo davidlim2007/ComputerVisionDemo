@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 namespace ComputerVisionDemo
@@ -21,6 +22,10 @@ namespace ComputerVisionDemo
 
         // The local filepath of the image being uploaded to the API.
         private string filePath;
+
+        // The bitmap source of the image to be uploaded. Used in drawing face
+        // rectangles on the image.
+        private BitmapImage bitmapSource;
 
         // A List that specifies the features to return from the Computer
         // Vision API. This only applies to Image Analysis.
@@ -122,7 +127,7 @@ namespace ComputerVisionDemo
             }
 
             Uri fileUri = new Uri(filePath);
-            BitmapImage bitmapSource = new BitmapImage();
+            bitmapSource = new BitmapImage();
 
             // Display the image on the Window.
             bitmapSource.BeginInit();
@@ -210,6 +215,69 @@ namespace ComputerVisionDemo
                         imageDescriptionStatusBar.Text += ", ";
                     }
                 }
+
+                DetectImagesInFaceAsync(analysis);
+            }
+        }
+
+        // The code for this method has been adapted from my FaceRecogDemo program
+        // (see https://davidlim2007.wordpress.com/2018/06/03/facial-detection-recognition-with-the-microsoft-face-api/)
+        // which in turn uses code adapted from https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinCSharpTutorial
+        private void DetectImagesInFaceAsync(ImageAnalysis analysis)
+        {
+            // Note that the Computer Vision API can be configured to return information
+            // of faces detected in an image (see the features list). Hence there is no
+            // need to make an explicit call to the Face API unless more substantial
+            // information on the faces (e.g. Face Descriptions) are required.
+            imageDescriptionStatusBar.Text += "\nFaces detected: " + analysis.Faces.Count;
+
+            // Define a double (currentResizeFactor) for the ResizeFactor for the current image.
+            // Note that the Resize Factor depends on the resolution of the current image as so 
+            // is not a constant value. Another important factor is the XAML image tag "Stretch" 
+            // property.
+            double currentResizeFactor;
+
+            if (analysis.Faces.Count > 0)
+            {
+                // Prepare to draw rectangles around the faces.
+                DrawingVisual visual = new DrawingVisual();
+                DrawingContext drawingContext = visual.RenderOpen();
+                drawingContext.DrawImage(bitmapSource,
+                    new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
+
+                double dpi = bitmapSource.DpiX;
+                currentResizeFactor = 96 / dpi;
+
+                foreach (FaceDescription face in analysis.Faces)
+                {
+                    // Draw a rectangle on the face.
+                    // Note that the dimensions given in FaceRectangle
+                    // is relative to the dimensions of the bitmap which
+                    // has been sent for face detection.
+                    drawingContext.DrawRectangle(
+                        Brushes.Transparent,
+                        new Pen(Brushes.Red, 2),
+                        new Rect(
+                            face.FaceRectangle.Left * currentResizeFactor,
+                            face.FaceRectangle.Top * currentResizeFactor,
+                            face.FaceRectangle.Width * currentResizeFactor,
+                            face.FaceRectangle.Height * currentResizeFactor
+                            )
+                    );
+                }
+
+                drawingContext.Close();
+
+                // Display the image with the rectangle around the face.
+                RenderTargetBitmap imgWithRectBitmap = new RenderTargetBitmap(
+                    (int)(bitmapSource.PixelWidth * currentResizeFactor),
+                    (int)(bitmapSource.PixelHeight * currentResizeFactor),
+                    96,
+                    96,
+                    PixelFormats.Pbgra32);
+
+                imgWithRectBitmap.Render(visual);
+                ImgUpload.Source = imgWithRectBitmap;
             }
         }
         
