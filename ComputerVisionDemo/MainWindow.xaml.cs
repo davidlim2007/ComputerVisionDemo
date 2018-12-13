@@ -166,13 +166,26 @@ namespace ComputerVisionDemo
             }
 
             lblError.Visibility = Visibility.Hidden;
+            imageDescriptionStatusBar.Text = "Analyzing...";
 
             using (Stream imageStream = File.OpenRead(filePath))
             {
                 ImageAnalysis analysis = await computerVision.AnalyzeImageInStreamAsync(
                     imageStream, features);
 
-                imageDescriptionStatusBar.Text = "Description: ";
+                imageDescriptionStatusBar.Text = "Categories: ";
+
+                for (int i = 0; i < analysis.Categories.Count; i++)
+                {
+                    imageDescriptionStatusBar.Text += analysis.Categories[i].Name;
+
+                    if (i != analysis.Categories.Count - 1)
+                    {
+                        imageDescriptionStatusBar.Text += ", ";
+                    }
+                }
+
+                imageDescriptionStatusBar.Text += "\nDescription: ";
                 imageDescriptionStatusBar.Text += analysis.Description.Captions[0].Text + "\n";
                 imageDescriptionStatusBar.Text += "Description Tags: ";
 
@@ -227,6 +240,9 @@ namespace ComputerVisionDemo
                 lblError.Visibility = Visibility.Visible;
                 return;
             }
+
+            lblError.Visibility = Visibility.Hidden;
+            imageDescriptionStatusBar.Text = "Extracting text...";
 
             using (Stream imageStream = File.OpenRead(filePath))
             {
