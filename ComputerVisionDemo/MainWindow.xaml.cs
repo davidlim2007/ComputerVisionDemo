@@ -32,8 +32,11 @@ namespace ComputerVisionDemo
         private static readonly List<VisualFeatureTypes> features =
             new List<VisualFeatureTypes>()
         {
-            VisualFeatureTypes.Categories, VisualFeatureTypes.Description,
-            VisualFeatureTypes.Faces, VisualFeatureTypes.ImageType,
+            VisualFeatureTypes.Categories,
+            VisualFeatureTypes.Color,
+            VisualFeatureTypes.Description,
+            VisualFeatureTypes.Faces,
+            VisualFeatureTypes.ImageType,
             VisualFeatureTypes.Tags
         };
 
@@ -106,7 +109,7 @@ namespace ComputerVisionDemo
             // Get the image file to scan from the user.
             var openDlg = new Microsoft.Win32.OpenFileDialog();
 
-            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg";
+            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg|PNG Image(*.png)|*.png|Bitmap Image(*.bmp)|*.bmp";
             bool? result = openDlg.ShowDialog(this);
 
             // Return if canceled.
@@ -178,52 +181,139 @@ namespace ComputerVisionDemo
                 ImageAnalysis analysis = await computerVision.AnalyzeImageInStreamAsync(
                     imageStream, features);
 
-                imageDescriptionStatusBar.Text = "Categories: ";
+                imageDescriptionStatusBar.Text = "";
 
-                for (int i = 0; i < analysis.Categories.Count; i++)
-                {
-                    imageDescriptionStatusBar.Text += analysis.Categories[i].Name;
-
-                    if (i != analysis.Categories.Count - 1)
-                    {
-                        imageDescriptionStatusBar.Text += ", ";
-                    }
-                }
-
-                imageDescriptionStatusBar.Text += "\nDescription: ";
-                imageDescriptionStatusBar.Text += analysis.Description.Captions[0].Text + "\n";
-                imageDescriptionStatusBar.Text += "Description Tags: ";
-
-                for (int i = 0; i < analysis.Description.Tags.Count; i++)
-                {
-                    imageDescriptionStatusBar.Text += analysis.Description.Tags[i];
-
-                    if (i != analysis.Description.Tags.Count - 1)
-                    {
-                        imageDescriptionStatusBar.Text += ", ";
-                    }
-                }
-
-                imageDescriptionStatusBar.Text += "\nOther Tags: ";
-
-                for (int i = 0; i < analysis.Tags.Count; i++)
-                {
-                    imageDescriptionStatusBar.Text += analysis.Tags[i].Name;
-
-                    if (i != analysis.Tags.Count - 1)
-                    {
-                        imageDescriptionStatusBar.Text += ", ";
-                    }
-                }
-
-                DetectImagesInFaceAsync(analysis);
+                DisplayImageTypeInfo(analysis);
+                DisplayColorInfo(analysis);
+                DisplayCategoryInfo(analysis);
+                DisplayDescriptionInfo(analysis);
+                DisplayTagInfo(analysis);
+                DetectImagesInFace(analysis);
             }
+        }
+
+        // Displays Image Type information obtained from the Image Analysis operation.
+        private void DisplayImageTypeInfo(ImageAnalysis analysis)
+        {
+            imageDescriptionStatusBar.Text += "\n[IMAGE TYPE INFO]";
+            imageDescriptionStatusBar.Text += "\nIs Clip Art: ";
+
+            if (analysis.ImageType.ClipArtType == 0)
+            {
+                imageDescriptionStatusBar.Text += "False";
+            }
+            else
+            {
+                imageDescriptionStatusBar.Text += "True";
+            }
+
+            imageDescriptionStatusBar.Text += "\nIs Line Drawing: ";
+
+            if (analysis.ImageType.LineDrawingType == 0)
+            {
+                imageDescriptionStatusBar.Text += "False";
+            }
+            else
+            {
+                imageDescriptionStatusBar.Text += "True";
+            }
+
+            imageDescriptionStatusBar.Text += "\n";
+        }
+
+        // Displays Image Color information obtained from the Image Analysis operation.
+        private void DisplayColorInfo(ImageAnalysis analysis)
+        {
+            imageDescriptionStatusBar.Text += "\n[COLOR INFO]";
+            imageDescriptionStatusBar.Text += "\nAccent Color: " + analysis.Color.AccentColor;
+            imageDescriptionStatusBar.Text += "\nDominant Color Background: " + analysis.Color.DominantColorBackground;
+            imageDescriptionStatusBar.Text += "\nDominant Color Foreground: " + analysis.Color.DominantColorForeground;
+            imageDescriptionStatusBar.Text += "\nDominant Colors: ";
+
+            for (int i = 0; i < analysis.Color.DominantColors.Count; i++)
+            {
+                imageDescriptionStatusBar.Text += analysis.Color.DominantColors[i];
+
+                if (i != analysis.Color.DominantColors.Count - 1)
+                {
+                    imageDescriptionStatusBar.Text += ", ";
+                }
+            }
+
+            imageDescriptionStatusBar.Text += "\nIs Black & White image: " + analysis.Color.IsBWImg + "\n";
+        }
+
+        // Displays Image Category information obtained from the Image Analysis operation.
+        private void DisplayCategoryInfo(ImageAnalysis analysis)
+        {
+            imageDescriptionStatusBar.Text += "\n[CATEGORIES]\n";
+
+            for (int i = 0; i < analysis.Categories.Count; i++)
+            {
+                imageDescriptionStatusBar.Text += analysis.Categories[i].Name;
+
+                if (i != analysis.Categories.Count - 1)
+                {
+                    imageDescriptionStatusBar.Text += ", ";
+                }
+            }
+
+            imageDescriptionStatusBar.Text += "\n";
+        }
+
+        // Displays Image Description information obtained from the Image Analysis operation.
+        private void DisplayDescriptionInfo(ImageAnalysis analysis)
+        {
+            imageDescriptionStatusBar.Text += "\n[DESCRIPTION]";
+            imageDescriptionStatusBar.Text += "\nCaptions: ";
+
+            for (int i = 0; i < analysis.Description.Captions.Count; i++)
+            {
+                imageDescriptionStatusBar.Text += analysis.Description.Captions[i].Text;
+
+                if (i != analysis.Description.Captions.Count - 1)
+                {
+                    imageDescriptionStatusBar.Text += ", ";
+                }
+            }            
+
+            imageDescriptionStatusBar.Text += "\nDescription Tags: ";
+
+            for (int i = 0; i < analysis.Description.Tags.Count; i++)
+            {
+                imageDescriptionStatusBar.Text += analysis.Description.Tags[i];
+
+                if (i != analysis.Description.Tags.Count - 1)
+                {
+                    imageDescriptionStatusBar.Text += ", ";
+                }
+            }
+
+            imageDescriptionStatusBar.Text += "\n";
+        }
+
+        // Displays Image Tag information obtained from the Image Analysis operation.
+        private void DisplayTagInfo(ImageAnalysis analysis)
+        {
+            imageDescriptionStatusBar.Text += "\n[TAGS]\n";
+
+            for (int i = 0; i < analysis.Tags.Count; i++)
+            {
+                imageDescriptionStatusBar.Text += analysis.Tags[i].Name;
+
+                if (i != analysis.Tags.Count - 1)
+                {
+                    imageDescriptionStatusBar.Text += ", ";
+                }
+            }
+
+            imageDescriptionStatusBar.Text += "\n";
         }
 
         // The code for this method has been adapted from my FaceRecogDemo program
         // (see https://davidlim2007.wordpress.com/2018/06/03/facial-detection-recognition-with-the-microsoft-face-api/)
         // which in turn uses code adapted from https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinCSharpTutorial
-        private void DetectImagesInFaceAsync(ImageAnalysis analysis)
+        private void DetectImagesInFace(ImageAnalysis analysis)
         {
             // Note that the Computer Vision API can be configured to return information
             // of faces detected in an image (see the features list). Hence there is no
