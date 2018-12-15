@@ -109,7 +109,7 @@ namespace ComputerVisionDemo
             // Get the image file to scan from the user.
             var openDlg = new Microsoft.Win32.OpenFileDialog();
 
-            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg|PNG Image(*.png)|*.png|Bitmap Image(*.bmp)|*.bmp";
+            openDlg.Filter = "JPEG Image(*.jpg)|*.jpg|PNG Image(*.png)|*.png|Bitmap Image(*.bmp)|*.bmp|GIF Image(*gif)|*.gif";
             bool? result = openDlg.ShowDialog(this);
 
             // Return if canceled.
@@ -182,7 +182,6 @@ namespace ComputerVisionDemo
                     imageStream, features);
 
                 imageDescriptionStatusBar.Text = "";
-
                 DisplayImageTypeInfo(analysis);
                 DisplayColorInfo(analysis);
                 DisplayCategoryInfo(analysis);
@@ -196,15 +195,25 @@ namespace ComputerVisionDemo
         private void DisplayImageTypeInfo(ImageAnalysis analysis)
         {
             imageDescriptionStatusBar.Text += "\n[IMAGE TYPE INFO]";
-            imageDescriptionStatusBar.Text += "\nIs Clip Art: ";
+            imageDescriptionStatusBar.Text += "\nClip Art Type: ";
 
-            if (analysis.ImageType.ClipArtType == 0)
+            switch (analysis.ImageType.ClipArtType)
             {
-                imageDescriptionStatusBar.Text += "False";
-            }
-            else
-            {
-                imageDescriptionStatusBar.Text += "True";
+                case 1:
+                    imageDescriptionStatusBar.Text += "Ambiguous";
+                    break;
+
+                case 2:
+                    imageDescriptionStatusBar.Text += "Normal";
+                    break;
+
+                case 3:
+                    imageDescriptionStatusBar.Text += "Good";
+                    break;
+
+                default:
+                    imageDescriptionStatusBar.Text += "Non-Clipart";
+                    break;
             }
 
             imageDescriptionStatusBar.Text += "\nIs Line Drawing: ";
