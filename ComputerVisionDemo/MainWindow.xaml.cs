@@ -178,10 +178,17 @@ namespace ComputerVisionDemo
 
             using (Stream imageStream = File.OpenRead(filePath))
             {
+                // Call the Computer Vision API to perform Image Analysis.
+                //
+                // The returned object (of ImageAnalysis type) contains the
+                // information returned from the Image Analysis operation.
                 ImageAnalysis analysis = await computerVision.AnalyzeImageInStreamAsync(
                     imageStream, features);
 
                 imageDescriptionStatusBar.Text = "";
+
+                // Each set of information contained in the ImageAnalysis object
+                // is processed and displayed as text.
                 DisplayImageTypeInfo(analysis);
                 DisplayColorInfo(analysis);
                 DisplayCategoryInfo(analysis);
@@ -192,11 +199,22 @@ namespace ComputerVisionDemo
         }
 
         // Displays Image Type information obtained from the Image Analysis operation.
+        //
+        // If ImageType is amongst the features specified for the API to return (in the
+        // case of this demo program, ImageType is included), the API will analyze the
+        // image to determine if it is Clipart or a Line drawing. The ImageAnalysis object
+        // returned will hence contain two values - ClipArtType and LineDrawing. Both of
+        // these attributes will be explained in the comments below.
         private void DisplayImageTypeInfo(ImageAnalysis analysis)
         {
             imageDescriptionStatusBar.Text += "\n[IMAGE TYPE INFO]";
             imageDescriptionStatusBar.Text += "\nClip Art Type: ";
 
+            // ClipArtType represents whether or not the API has determined that
+            // the image is Clipart, and if so, the type of Clipart the image is.
+            //
+            // Its values include Non-clipart (0), ambiguous (1), 
+            // normal (2), and good clipart (3).
             switch (analysis.ImageType.ClipArtType)
             {
                 case 1:
@@ -216,6 +234,11 @@ namespace ComputerVisionDemo
                     break;
             }
 
+            // Similar to the case of ClipArtType, LineDrawingType represents whether
+            // or not the API has determined that the image is a Line drawing.
+            //
+            // Unlike ClipArtType, however, LineDrawingType is a binary value that is
+            // either 0 (non-line drawing) or 1 (line drawing).
             imageDescriptionStatusBar.Text += "\nIs Line Drawing: ";
 
             if (analysis.ImageType.LineDrawingType == 0)
