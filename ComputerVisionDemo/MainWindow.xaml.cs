@@ -457,7 +457,7 @@ namespace ComputerVisionDemo
 
                 drawingContext.Close();
 
-                // Display the image with the rectangle around the face.
+                // Display the image with the rectangle(s) around the face(s).
                 RenderTargetBitmap imgWithRectBitmap = new RenderTargetBitmap(
                     (int)(bitmapSource.PixelWidth * currentResizeFactor),
                     (int)(bitmapSource.PixelHeight * currentResizeFactor),
@@ -539,6 +539,82 @@ namespace ComputerVisionDemo
                 {
                     imageDescriptionStatusBar.Text += line.Text + "\n";
                 }
+
+                DrawTextRectangles(lines);
+            }
+        }
+
+        // The code for this method has been adapted from my FaceRecogDemo program
+        // (see https://davidlim2007.wordpress.com/2018/06/03/facial-detection-recognition-with-the-microsoft-face-api/)
+        // which in turn uses code adapted from https://docs.microsoft.com/en-us/azure/cognitive-services/Face/Tutorials/FaceAPIinCSharpTutorial
+        //
+        // This method searches for each line of text detected in the image and draws a
+        // rectangle over them to highlight their presence in the image. When the Text
+        // Extraction operation completes, the API returns, for each line of text detected,
+        // a set of coordinates called a BoundingBox. Each BoundingBox contains the coordinates
+        // of the corresponding line on the image. 
+        //
+        // In this method, we will interpret these coordinates and use them to draw rectangles
+        // around each line in the image, much like we have already done for faces.
+        private void DrawTextRectangles(IList<Line> lines)
+        {
+            double currentResizeFactor;
+
+            if (lines.Count > 0)
+            {
+                // Prepare to draw rectangles around each text line.
+                DrawingVisual visual = new DrawingVisual();
+                DrawingContext drawingContext = visual.RenderOpen();
+                drawingContext.DrawImage(bitmapSource,
+                    new Rect(0, 0, bitmapSource.Width, bitmapSource.Height));
+
+                double dpi = bitmapSource.DpiX;
+                currentResizeFactor = 96 / dpi;
+
+                foreach (Line line in lines)
+                {
+                    // According to https://westus.dev.cognitive.microsoft.com/docs/services/5adf991815e1060e6355ad44/operations/587f2cf1154055056008f201:
+                    // The BoundingBox attribute for each line represents the four points 
+                    // (x-coordinate, y-coordinate) of the detected Line Rectangle from the
+                    // top-left corner and clockwise.
+                    //
+                    // This means that the first element of BoundingBox contains the x-coordinate
+                    // of the top-left corner, the second element contains the y-coordinate of the
+                    // top-left corner, the third element contains the x-coordinate of the top-right
+                    // corner, and so on.
+                    //
+                    // Using this, we can discern the necessary information (e.g. the width and height
+                    // of each Line Rectangle) in order to draw them on the image.
+                    int xcoord = line.BoundingBox[0];
+                    int ycoord = line.BoundingBox[1];
+                    int width = line.BoundingBox[2] - line.BoundingBox[0];
+                    int height = line.BoundingBox[5] - line.BoundingBox[3];
+                    
+                    // Draw a rectangle on the line.
+                    drawingContext.DrawRectangle(
+                        Brushes.Transparent,
+                        new Pen(Brushes.Red, 2),
+                        new Rect(
+                            xcoord * currentResizeFactor,
+                            ycoord * currentResizeFactor,
+                            width * currentResizeFactor,
+                            height * currentResizeFactor
+                            )                        
+                    );
+                }
+
+                drawingContext.Close();
+
+                // Display the image with the rectangle(s) around the lines.
+                RenderTargetBitmap imgWithRectBitmap = new RenderTargetBitmap(
+                    (int)(bitmapSource.PixelWidth * currentResizeFactor),
+                    (int)(bitmapSource.PixelHeight * currentResizeFactor),
+                    96,
+                    96,
+                    PixelFormats.Pbgra32);
+
+                imgWithRectBitmap.Render(visual);
+                ImgUpload.Source = imgWithRectBitmap;
             }
         }
     }
