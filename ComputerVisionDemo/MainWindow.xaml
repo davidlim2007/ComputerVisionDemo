@@ -30,7 +30,7 @@
             </DockPanel>
         </Grid>
         <TextBox x:Name="CVKey" HorizontalAlignment="Left" Height="30" Margin="80.8,26,0,0" VerticalAlignment="Top" Width="262" TextWrapping="Wrap" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" />
-        <Label Name="lblError" Content="" HorizontalAlignment="Left" Height="35" Margin="36.6,65,0,0" VerticalAlignment="Top" Width="552" Grid.Row="1" Grid.ColumnSpan="5" Grid.Column="1" Visibility="Visible" Foreground="#FFF90101" />
+        <Label Name="lblError" Content="" HorizontalAlignment="Left" Height="35" Margin="36.6,65,0,0" VerticalAlignment="Top" Width="943" Grid.Row="1" Grid.ColumnSpan="6" Grid.Column="1" Visibility="Visible" Foreground="#FFF90101" />
         <Button Name="MSCognitiveServicesLogin" HorizontalAlignment="Left" Height="30" Margin="27.4,26,0,0" VerticalAlignment="Top" Width="230" Content="MS Computer Vision Login" Grid.Column="3" Grid.ColumnSpan="3" Grid.RowSpan="2" Click="MSCognitiveServicesLogin_Click"/>
         <Button x:Name="BrowseButton" Width="119" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Browse..." Click="BrowseButton_Click" Grid.Column="1" Margin="35.6,0,0,578" Grid.Row="2" Grid.ColumnSpan="2" />
         <Button Name="btnAnalyzeImage" HorizontalAlignment="Left" Height="30" Margin="189.8,0,0,0" VerticalAlignment="Top" Width="119" Content="Analyze Image" Grid.Column="2" Grid.Row="2" Click="btnAnalyzeImage_Click" />

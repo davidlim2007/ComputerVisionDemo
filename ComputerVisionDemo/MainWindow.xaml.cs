@@ -178,11 +178,12 @@ namespace ComputerVisionDemo
         // https://docs.microsoft.com/en-us/azure/cognitive-services/Computer-vision/quickstarts-sdk/csharp-analyze-sdk
         private async Task AnalyzeImageAsync()
         {
-            // If the user has not entered a key, display an error message
-            // prompting the user to do so.
-            if (String.IsNullOrEmpty(CVKey.Text))
+            // If computerVision is not initialized, display an error message
+            // prompting the user to enter the relevant credentials (i.e. API key
+            // and/or Endpoint).
+            if (computerVision == null)
             {
-                lblError.Content = "Please enter a Computer Vision API Key.";
+                lblError.Content = "Computer Vision API Client not initialized. Please enter your API key and/or Endpoint if you haven't already done so.";
                 lblError.Visibility = Visibility.Visible;
                 return;
             }
@@ -357,8 +358,6 @@ namespace ComputerVisionDemo
 
                 imageDescriptionStatusBar.Text += "\n";
             }
-
-            imageDescriptionStatusBar.Text += "\n";
         }
 
         // Displays Image Description information obtained from the Image Analysis operation.
@@ -478,9 +477,12 @@ namespace ComputerVisionDemo
 
         private async Task GetTextAsync()
         {
-            if (String.IsNullOrEmpty(CVKey.Text))
+            // If computerVision is not initialized, display an error message
+            // prompting the user to enter the relevant credentials (i.e. API key
+            // and/or Endpoint).
+            if (computerVision == null)
             {
-                lblError.Content = "Please enter a Computer Vision API Key.";
+                lblError.Content = "Computer Vision API Client not initialized. Please enter your API key and/or Endpoint if you haven't already done so.";
                 lblError.Visibility = Visibility.Visible;
                 return;
             }
