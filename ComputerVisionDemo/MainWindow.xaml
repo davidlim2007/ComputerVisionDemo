@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        Title="Computer Vision Demo" Height="700" Width="1000">
+        Title="Computer Vision Demo" Height="778" Width="1000">
     <Grid Name="MainGrid">
         <Grid.RowDefinitions>
             <RowDefinition Height="40"/>
@@ -19,21 +19,24 @@
             <ColumnDefinition Width="441.376"/>
         </Grid.ColumnDefinitions>
 
-        <Grid x:Name="BackPanel" Grid.Row="2" Grid.ColumnSpan="6" Margin="35.6,0,147.4,0.4" Grid.Column="1">
+        <Grid x:Name="BackPanel" Grid.Row="2" Grid.ColumnSpan="6" Margin="35.6,55,147.4,0" Grid.Column="1">
             <Image x:Name="ImgUpload" Stretch="Uniform" Margin="0,0,394,0" />
             <DockPanel DockPanel.Dock="Bottom" HorizontalAlignment="Right" Margin="0,0,-0.248,0">
                 <StatusBar VerticalAlignment="Bottom" Margin="0,0,0,-0.4" Width="389">
-                    <StatusBarItem Height="680">
+                    <StatusBarItem Height="587">
                         <TextBlock Name="imageDescriptionStatusBar" TextWrapping="Wrap" TextAlignment="Left" />
                     </StatusBarItem>
                 </StatusBar>
             </DockPanel>
         </Grid>
-        <TextBox x:Name="CVKey" HorizontalAlignment="Left" Height="30" Margin="35.6,26,0,0" VerticalAlignment="Top" Width="344" TextWrapping="Wrap" Text="" Grid.ColumnSpan="3" Grid.Column="1" Grid.RowSpan="2" />
-        <Label Name="lblError" Content="" HorizontalAlignment="Left" Height="35" Margin="35.6,65,0,0" VerticalAlignment="Top" Width="552" Grid.Row="1" Grid.ColumnSpan="5" Grid.Column="1" Visibility="Hidden" Foreground="#FFF90101" />
+        <TextBox x:Name="CVKey" HorizontalAlignment="Left" Height="30" Margin="80.8,26,0,0" VerticalAlignment="Top" Width="262" TextWrapping="Wrap" Grid.Column="2" Grid.RowSpan="2" Grid.ColumnSpan="2" />
+        <Label Name="lblError" Content="" HorizontalAlignment="Left" Height="35" Margin="36.6,65,0,0" VerticalAlignment="Top" Width="552" Grid.Row="1" Grid.ColumnSpan="5" Grid.Column="1" Visibility="Visible" Foreground="#FFF90101" />
         <Button Name="MSCognitiveServicesLogin" HorizontalAlignment="Left" Height="30" Margin="27.4,26,0,0" VerticalAlignment="Top" Width="230" Content="MS Computer Vision Login" Grid.Column="3" Grid.ColumnSpan="3" Grid.RowSpan="2" Click="MSCognitiveServicesLogin_Click"/>
-        <Button x:Name="BrowseButton" Width="119" Height="30" VerticalAlignment="Bottom" HorizontalAlignment="Left" Content="Browse..." Click="BrowseButton_Click" Grid.Column="1" Margin="36.6,0,0,35" Grid.Row="1" Grid.ColumnSpan="2" />
-        <Button Name="btnAnalyzeImage" HorizontalAlignment="Left" Height="30" Margin="187.8,35,0,0" VerticalAlignment="Top" Width="119" Content="Analyze Image" Grid.Column="2" Grid.Row="1" Click="btnAnalyzeImage_Click" />
-        <Button Name="btnExtractText" Content="Extract Text" Grid.Column="3" HorizontalAlignment="Left" Margin="27.4,35,0,0" Grid.Row="1" VerticalAlignment="Top" Width="119" Height="30" Click="btnExtractText_Click"/>
+        <Button x:Name="BrowseButton" Width="119" Height="30" VerticalAlignment="Top" HorizontalAlignment="Left" Content="Browse..." Click="BrowseButton_Click" Grid.Column="1" Margin="35.6,0,0,578" Grid.Row="2" Grid.ColumnSpan="2" />
+        <Button Name="btnAnalyzeImage" HorizontalAlignment="Left" Height="30" Margin="189.8,0,0,0" VerticalAlignment="Top" Width="119" Content="Analyze Image" Grid.Column="2" Grid.Row="2" Click="btnAnalyzeImage_Click" />
+        <Button Name="btnExtractText" Content="Extract Text" Grid.Column="3" HorizontalAlignment="Left" Margin="27.4,0,0,0" Grid.Row="2" VerticalAlignment="Top" Width="119" Height="30" Click="btnExtractText_Click"/>
+        <TextBox x:Name="CVEndpoint" HorizontalAlignment="Left" Height="30" Margin="80.8,35,0,0" VerticalAlignment="Top" Width="262" TextWrapping="Wrap" Grid.Column="2" Grid.Row="1" Grid.ColumnSpan="2" />
+        <Label Content="API Key" Grid.Column="1" HorizontalAlignment="Left" Margin="36.6,30,0,0" VerticalAlignment="Top" Grid.ColumnSpan="2" Grid.RowSpan="2" Width="81"/>
+        <Label Content="API Endpoint" Grid.Column="1" HorizontalAlignment="Left" Margin="36.6,0,0,39" Grid.Row="1" VerticalAlignment="Bottom" Width="81" Grid.ColumnSpan="2"/>
     </Grid>
 </Window>

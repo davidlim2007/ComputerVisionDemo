@@ -66,6 +66,25 @@ namespace ComputerVisionDemo
                 lblError.Visibility = Visibility.Visible;
                 return;
             }
+
+            // If the user has not entered a URL Endpoint in the CVEndpoint
+            // textbox, display an error message prompting the user to enter 
+            // the Endpoint.
+            //
+            // Different users may have obtained their keys from different
+            // regions. For example, one user may have obtained their key
+            // from the West Central US region, while another has obtained
+            // their key from the South-East Asia region, etc.
+            //
+            // The Endpoint specifies the region where the user has obtained
+            // their key, and hence which region that the key is valid for
+            // use.
+            if (String.IsNullOrEmpty(CVEndpoint.Text))
+            {
+                lblError.Content = "Please specify an Endpoint.";
+                lblError.Visibility = Visibility.Visible;
+                return;
+            }
             
             lblError.Visibility = Visibility.Hidden;
 
@@ -82,11 +101,15 @@ namespace ComputerVisionDemo
             // Else, if computerVision could not be instantiated, we display an error
             // message.
             if (computerVision != null)
-            {
+            {                
+                computerVision.Endpoint = CVEndpoint.Text;
+
                 CVKey.Text = "Connection successful.";
                 CVKey.IsReadOnly = true;
                 MSCognitiveServicesLogin.IsEnabled = false;
-                computerVision.Endpoint = "https://westcentralus.api.cognitive.microsoft.com";
+
+                CVEndpoint.Text = "";
+                CVEndpoint.IsReadOnly = true;
             }
             else
             {
@@ -282,12 +305,57 @@ namespace ComputerVisionDemo
 
             for (int i = 0; i < analysis.Categories.Count; i++)
             {
-                imageDescriptionStatusBar.Text += analysis.Categories[i].Name;
+                imageDescriptionStatusBar.Text += "Category " + (i + 1) + " : " + analysis.Categories[i].Name;
 
-                if (i != analysis.Categories.Count - 1)
+                imageDescriptionStatusBar.Text += "\nDetails : ";
+                var catDetails = analysis.Categories[i].Detail;
+                
+                if (catDetails == null)
                 {
-                    imageDescriptionStatusBar.Text += ", ";
+                    imageDescriptionStatusBar.Text += "None";
                 }
+                else
+                {
+                    imageDescriptionStatusBar.Text += "\nCelebrities : ";
+
+                    if (catDetails.Celebrities == null || catDetails.Celebrities.Count == 0)
+                    {
+                        imageDescriptionStatusBar.Text += "None";
+                    }
+                    else
+                    {
+                        for (int j = 0; j < catDetails.Celebrities.Count; j++)
+                        {
+                            imageDescriptionStatusBar.Text += catDetails.Celebrities[j].Name;
+
+                            if (j != catDetails.Celebrities.Count - 1)
+                            {
+                                imageDescriptionStatusBar.Text += ", ";
+                            }
+                        }
+                    }
+
+                    imageDescriptionStatusBar.Text += "\nLandmarks : ";
+
+                    if (catDetails.Landmarks == null || catDetails.Landmarks.Count == 0)
+                    {
+                        imageDescriptionStatusBar.Text += "None";
+                    }
+                    else
+                    {
+                        for (int j = 0; j < catDetails.Landmarks.Count; j++)
+                        {
+                            imageDescriptionStatusBar.Text += catDetails.Landmarks[j].Name;
+
+                            if (j != catDetails.Landmarks.Count - 1)
+                            {
+                                imageDescriptionStatusBar.Text += ", ";
+                            }
+                        }
+                    }
+                }
+
+                imageDescriptionStatusBar.Text += "\n";
             }
 
             imageDescriptionStatusBar.Text += "\n";
