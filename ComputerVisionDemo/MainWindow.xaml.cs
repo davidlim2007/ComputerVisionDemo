@@ -306,18 +306,18 @@ namespace ComputerVisionDemo
 
             for (int i = 0; i < analysis.Categories.Count; i++)
             {
-                imageDescriptionStatusBar.Text += "Category " + (i + 1) + " : " + analysis.Categories[i].Name;
+                imageDescriptionStatusBar.Text += "Category " + (i + 1) + ": " + analysis.Categories[i].Name;
 
-                imageDescriptionStatusBar.Text += "\nDetails : ";
+                imageDescriptionStatusBar.Text += "\n[Details]";
                 var catDetails = analysis.Categories[i].Detail;
                 
                 if (catDetails == null)
                 {
-                    imageDescriptionStatusBar.Text += "None";
+                    imageDescriptionStatusBar.Text += "\nNo details.";
                 }
                 else
                 {
-                    imageDescriptionStatusBar.Text += "\nCelebrities : ";
+                    imageDescriptionStatusBar.Text += "\nCelebrities: ";
 
                     if (catDetails.Celebrities == null || catDetails.Celebrities.Count == 0)
                     {
@@ -336,7 +336,7 @@ namespace ComputerVisionDemo
                         }
                     }
 
-                    imageDescriptionStatusBar.Text += "\nLandmarks : ";
+                    imageDescriptionStatusBar.Text += "\nLandmarks: ";
 
                     if (catDetails.Landmarks == null || catDetails.Landmarks.Count == 0)
                     {
