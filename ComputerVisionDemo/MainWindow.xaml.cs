@@ -23,8 +23,8 @@ namespace ComputerVisionDemo
         // The local filepath of the image being uploaded to the API.
         private string filePath;
 
-        // The bitmap source of the image to be uploaded. Used in drawing face
-        // rectangles on the image.
+        // The bitmap source of the image to be uploaded. Used in drawing
+        // rectangles on the image to highlight faces/lines.
         private BitmapImage bitmapSource;
 
         // A List that specifies the features to return from the Computer
@@ -300,14 +300,32 @@ namespace ComputerVisionDemo
         }
 
         // Displays Image Category information obtained from the Image Analysis operation.
+        //
+        // Each Category assigned to the image also contains additional information, such
+        // as Celebrities or Landmarks detected in the image that pertain to that particular
+        // Category.
         private void DisplayCategoryInfo(ImageAnalysis analysis)
         {
             imageDescriptionStatusBar.Text += "\n[CATEGORIES]\n";
 
             for (int i = 0; i < analysis.Categories.Count; i++)
             {
+                // Display the name of each Category assigned to the image.
                 imageDescriptionStatusBar.Text += "Category " + (i + 1) + ": " + analysis.Categories[i].Name;
 
+                // Extract the Details of the Category. The Details sub-object
+                // contains two lists:
+                //
+                // 1. Celebrities, a list of CelebritiesModel objects containing
+                // information on Celebrities detected in the image that pertain
+                // to that Category.
+                //
+                // 2. Landmarks, a list of LandmarksModel objects containing
+                // information on Landmarks detected in the image that pertain
+                // to that Category.
+                //
+                // We will iterate through each of these two lists, and display the
+                // names of the Celebrities and Landmarks where applicable.
                 imageDescriptionStatusBar.Text += "\n[Details]";
                 var catDetails = analysis.Categories[i].Detail;
                 
@@ -535,9 +553,16 @@ namespace ComputerVisionDemo
                 var lines = result.RecognitionResult.Lines;
                 imageDescriptionStatusBar.Text = "Text:\n";
 
-                foreach (Line line in lines)
+                if (lines.Count == 0)
                 {
-                    imageDescriptionStatusBar.Text += line.Text + "\n";
+                    imageDescriptionStatusBar.Text += "None";
+                }
+                else
+                {
+                    foreach (Line line in lines)
+                    {
+                        imageDescriptionStatusBar.Text += line.Text + "\n";
+                    }
                 }
 
                 DrawTextRectangles(lines);
