@@ -493,6 +493,9 @@ namespace ComputerVisionDemo
             await GetTextAsync();
         }
 
+        // This method is adapted from the ExtractLocalTextAsync() and
+        // GetTextAsync() methods from the following tutorial: 
+        // https://docs.microsoft.com/en-us/azure/cognitive-services/Computer-vision/quickstarts-sdk/csharp-hand-text-sdk
         private async Task GetTextAsync()
         {
             // If computerVision is not initialized, display an error message
@@ -505,6 +508,8 @@ namespace ComputerVisionDemo
                 return;
             }
 
+            // If the user has not uploaded an image, display an error message
+            // prompting the user to do so.
             if (String.IsNullOrEmpty(filePath))
             {
                 lblError.Content = "Please upload an image.";
@@ -531,15 +536,35 @@ namespace ComputerVisionDemo
 
                 TextOperationResult result = await computerVision.GetTextOperationResultAsync(operationId);
 
-                // Wait for the operation to complete
+                // Wait for the operation to complete.
+                //
+                // This ensures that the operation fully completes and returns
+                // the necessary information before the program can proceed.
+                //
+                // While the Text Extraction operation has not fully completed,
+                // the program will wait until:
+                //
+                // 1. The operation has fully completed, or
+                // 
+                // 2. The timeout threshold has been reached (i.e. the counter 
+                // variable i reaches the value of maxRetries).                
                 int i = 0;
                 int maxRetries = 10;
+
                 while ((result.Status == TextOperationStatusCodes.Running ||
-                        result.Status == TextOperationStatusCodes.NotStarted) && i++ < maxRetries)
+                        result.Status == TextOperationStatusCodes.NotStarted) /*&& i++ < maxRetries*/)
                 {
                     await Task.Delay(1000);
-
                     result = await computerVision.GetTextOperationResultAsync(operationId);
+                }
+                
+                // If operation timeout has occurred, display an error message.
+                if (i == maxRetries)
+                {
+                    imageDescriptionStatusBar.Text = "";
+                    lblError.Content = "API timeout. Unable to extract text.";
+                    lblError.Visibility = Visibility.Visible;
+                    return;
                 }
 
                 // Display the results
