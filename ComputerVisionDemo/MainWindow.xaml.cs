@@ -512,13 +512,6 @@ namespace ComputerVisionDemo
                 return;
             }
 
-            if (!File.Exists(filePath))
-            {
-                lblError.Content = "Unable to open or read Image Path: " + filePath;
-                lblError.Visibility = Visibility.Visible;
-                return;
-            }
-
             lblError.Visibility = Visibility.Hidden;
             imageDescriptionStatusBar.Text = "Extracting text...";
 
